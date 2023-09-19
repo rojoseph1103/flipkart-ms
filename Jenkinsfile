@@ -53,7 +53,7 @@ pipeline {
                 sh """
                 echo "\$dockerhubCred" | docker login --username romeo11111  --password-stdin docker.io
                 echo "Push Docker Image to DockerHub: In Progress"
-                docker push romeo11111 /flipkart-ms:dev-flipkart-ms-v1.${BUILD_NUMBER}
+                docker push romeo11111/flipkart-ms:dev-flipkart-ms-v1.${BUILD_NUMBER}
                 echo "Push Docker Image to DockerHub: Completed"
 				"""
                 }
