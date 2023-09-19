@@ -71,7 +71,7 @@ pipeline {
 
                 if (dockerImageExists) {
                 echo "Docker image 'flipkart-ms:$dockerImageTag' found locally."
-<<<<<<< HEAD
+
 
                 // Proceed with tagging and pushing to ECR
                 sh "docker tag flipkart-ms:$dockerImageTag $ecrRepositoryUrl"
