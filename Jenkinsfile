@@ -32,11 +32,12 @@ pipeline {
             }
         }
         stage('Building & Tag Docker Image') {
-           steps {
-             echo 'Starting Building Docker Image'
-             sh "docker build -t romeo11111/flipkart-ms:dev-flipkart-ms-v1.${BUILD_NUMBER} ."
-             echo 'Completed Building Docker Image'
-           }
+            steps {
+                echo 'Starting Building Docker Image'
+                sh "docker build -t satyam88/flipkart-ms:dev-flipkart-ms-v1.${BUILD_NUMBER} ."
+                sh "docker build -t flipkart-ms:dev-flipkart-ms-v1.${BUILD_NUMBER} ."
+                echo 'Completed Building Docker Image'
+            }
         }
         stage('Docker Image Scanning') {
             steps {
@@ -46,34 +47,41 @@ pipeline {
             }
         }
         stage('Docker push to Docker Hub') {
-            steps {
-                script {
+          steps {
+            script {
                 withCredentials([string(credentialsId: 'dockerhubCred', variable: 'dockerhubCred')]) {
                 sh """
                 echo "\$dockerhubCred" | docker login --username romeo11111  --password-stdin docker.io
                 echo "Push Docker Image to DockerHub: In Progress"
-                docker push romeo11111/flipkart-ms:dev-flipkart-ms-v1.${BUILD_NUMBER}
+                docker push romeo11111 /flipkart-ms:dev-flipkart-ms-v1.${BUILD_NUMBER}
                 echo "Push Docker Image to DockerHub: Completed"
 				"""
                 }
-                }
             }
+          }
         }
         stage('Docker Image Push to Amazon ECR') {
             steps {
-                script {
-                    withDockerRegistry([credentialsId: 'ecr:ap-south-1:ecr-credentials', url: "https://559220132560.dkr.ecr.ap-south-1.amazonaws.com"]) {
-                        sh """
-                        echo "Tagging the Docker Image: In Progress"
-                        docker tag flipkart-ms:dev-flipkart-ms-v1.${BUILD_NUMBER} 559220132560.dkr.ecr.ap-south-1.amazonaws.com/flipkart-ms:dev-flipkart-ms-v1.${BUILD_NUMBER}
-                        echo "Tagging the Docker Image: Completed"
-                        echo "Push Docker Image to ECR: In Progress"
-                        docker push 559220132560.dkr.ecr.ap-south-1.amazonaws.com/flipkart-ms:dev-flipkart-ms-v1.${BUILD_NUMBER}
-                        echo "Push Docker Image to ECR: Completed"
-                        """
-                    }
+              script {
+                def dockerImageTag = "dev-flipkart-ms-v1.25"
+                def ecrRepositoryUrl = "559220132560.dkr.ecr.ap-south-1.amazonaws.com/flipkart-ms:$dockerImageTag"
+
+                // Check if the Docker image exists locally
+                def dockerImageExists = sh(script: "docker images -q flipkart-ms:$dockerImageTag", returnStatus: true) == 0
+
+                if (dockerImageExists) {
+                echo "Docker image 'flipkart-ms:$dockerImageTag' found locally."
+                
+                // Proceed with tagging and pushing to ECR
+                sh "docker tag flipkart-ms:$dockerImageTag $ecrRepositoryUrl"
+                sh "docker push $ecrRepositoryUrl"
+                
+                echo "Pushed Docker image to ECR successfully."
+            } else {
+                error "Docker image 'flipkart-ms:$dockerImageTag' not found locally. Ensure it is built or pulled before pushing to ECR."
+            }
                 }
             }
-        }
+        }
 	}
 }
