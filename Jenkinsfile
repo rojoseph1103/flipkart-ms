@@ -34,7 +34,7 @@ pipeline {
         stage('Building & Tag Docker Image') {
             steps {
                 echo 'Starting Building Docker Image'
-                sh "docker build -t satyam88/flipkart-ms:dev-flipkart-ms-v1.${BUILD_NUMBER} ."
+                sh "docker build -t romeo11111/flipkart-ms:dev-flipkart-ms-v1.${BUILD_NUMBER} ."
                 sh "docker build -t flipkart-ms:dev-flipkart-ms-v1.${BUILD_NUMBER} ."
                 echo 'Completed Building Docker Image'
             }
@@ -53,7 +53,7 @@ pipeline {
                 sh """
                 echo "\$dockerhubCred" | docker login --username romeo11111  --password-stdin docker.io
                 echo "Push Docker Image to DockerHub: In Progress"
-                docker push romeo11111 /flipkart-ms:dev-flipkart-ms-v1.${BUILD_NUMBER}
+                docker push romeo11111/flipkart-ms:dev-flipkart-ms-v1.${BUILD_NUMBER}
                 echo "Push Docker Image to DockerHub: Completed"
 				"""
                 }
@@ -62,6 +62,7 @@ pipeline {
         }
         stage('Docker Image Push to Amazon ECR') {
             steps {
+<<<<<<< HEAD
                script {
                   withDockerRegistry([credentialsId: 'ecr:ap-south-1:ecr-credentials', url: "https://546080151415.dkr.ecr.ap-south-1.amazonaws.com"]) {
                       sh """
@@ -73,6 +74,34 @@ pipeline {
                       echo "Push Docker Image to ECR: Completed"
                       """
                   }
+=======
+              script {
+                def dockerImageTag = "dev-flipkart-ms-v1.25"
+                def ecrRepositoryUrl = "546080151415.dkr.ecr.ap-south-1.amazonaws.com/flipkart-ms:$dockerImageTag"
+
+                // Check if the Docker image exists locally
+                def dockerImageExists = sh(script: "docker images -q flipkart-ms:$dockerImageTag", returnStatus: true) == 0
+
+                if (dockerImageExists) {
+                echo "Docker image 'flipkart-ms:$dockerImageTag' found locally."
+
+
+                // Proceed with tagging and pushing to ECR
+                sh "docker tag flipkart-ms:$dockerImageTag $ecrRepositoryUrl"
+                sh "docker push $ecrRepositoryUrl"
+
+
+                
+                // Proceed with tagging and pushing to ECR
+                sh "docker tag flipkart-ms:$dockerImageTag $ecrRepositoryUrl"
+                sh "docker push $ecrRepositoryUrl"
+                
+                6332bfc9756e44bf61bdb1f4481b85c30dd0e5d2
+                echo "Pushed Docker image to ECR successfully."
+            } else {
+                error "Docker image 'flipkart-ms:$dockerImageTag' not found locally. Ensure it is built or pulled before pushing to ECR."
+            }
+>>>>>>> 6afec8188379e3cfaee5487cd3112edeaebfdfe6
                 }
             }
         }
