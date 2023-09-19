@@ -64,7 +64,7 @@ pipeline {
             steps {
               script {
                 def dockerImageTag = "dev-flipkart-ms-v1.25"
-                def ecrRepositoryUrl = "559220132560.dkr.ecr.ap-south-1.amazonaws.com/flipkart-ms:$dockerImageTag"
+                def ecrRepositoryUrl = "546080151415.dkr.ecr.ap-south-1.amazonaws.com/flipkart-ms:$dockerImageTag"
 
                 // Check if the Docker image exists locally
                 def dockerImageExists = sh(script: "docker images -q flipkart-ms:$dockerImageTag", returnStatus: true) == 0
