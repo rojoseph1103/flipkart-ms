@@ -1,5 +1,4 @@
-
-<<<<<<< HEAD
+pipeline {
     agent any
 
     tools {
