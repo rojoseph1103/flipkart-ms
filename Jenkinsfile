@@ -71,17 +71,25 @@ pipeline {
 
                 if (dockerImageExists) {
                 echo "Docker image 'flipkart-ms:$dockerImageTag' found locally."
+<<<<<<< HEAD
 
                 // Proceed with tagging and pushing to ECR
                 sh "docker tag flipkart-ms:$dockerImageTag $ecrRepositoryUrl"
                 sh "docker push $ecrRepositoryUrl"
 
+=======
+                
+                // Proceed with tagging and pushing to ECR
+                sh "docker tag flipkart-ms:$dockerImageTag $ecrRepositoryUrl"
+                sh "docker push $ecrRepositoryUrl"
+                
+>>>>>>> 6332bfc9756e44bf61bdb1f4481b85c30dd0e5d2
                 echo "Pushed Docker image to ECR successfully."
             } else {
                 error "Docker image 'flipkart-ms:$dockerImageTag' not found locally. Ensure it is built or pulled before pushing to ECR."
             }
                 }
             }
-        }
+       }
 	}
 }
