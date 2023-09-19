@@ -77,7 +77,7 @@ pipeline {
                 sh "docker tag flipkart-ms:$dockerImageTag $ecrRepositoryUrl"
                 sh "docker push $ecrRepositoryUrl"
 
-=======
+
                 
                 // Proceed with tagging and pushing to ECR
                 sh "docker tag flipkart-ms:$dockerImageTag $ecrRepositoryUrl"
