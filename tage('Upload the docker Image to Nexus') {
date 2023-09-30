@@ -1,0 +1,33 @@
+[1mdiff --git a/Jenkinsfile b/Jenkinsfile[m
+[1mindex 733a9cb..b20c378 100644[m
+[1m--- a/Jenkinsfile[m
+[1m+++ b/Jenkinsfile[m
+[36m@@ -1,5 +1,4 @@[m
+[31m-[m
+[31m-<<<<<<< HEAD[m
+[32m+[m[32mpipeline {[m
+     agent any[m
+ [m
+     tools {[m
+[36m@@ -73,6 +72,18 @@[m
+                }[m
+             }[m
+ 	    }[m
+[32m+[m	[32m     stage('Upload the docker Image to Nexus') {[m
+[32m+[m[32m                  steps {[m
+[32m+[m[32m                      script {[m
+[32m+[m[32m                         withCredentials([usernamePassword(credentialsId: 'nexuscred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]){[m
+[32m+[m[32m                         sh 'docker login http://65.0.104.33:8085/repository/flipkart-ms/ -u admin -p ${PASSWORD}'[m
+[32m+[m[32m                         echo "Push Docker Image to Nexus : In Progress"[m
+[32m+[m[32m                         sh 'docker tag flipkart-ms:dev-flipkart-ms-v1.${BUILD_NUMBER} 65.0.104.33:8085/flipkart-ms:dev-flipkart-ms-v1.${BUILD_NUMBER}'[m
+[32m+[m[32m                         sh 'docker push 65.0.104.33:8085/flipkart-ms:dev-flipkart-ms-v1.${BUILD_NUMBER}'[m
+[32m+[m[32m                         echo "Push Docker Image to Nexus : Completed"[m
+[32m+[m[32m                        }[m
+[32m+[m[32m                      }[m
+[32m+[m[32m                  }[m
+[32m+[m[32m         }[m
+     }[m
+[31m-}[m
+[31m-[m
+[32m+[m[32m}[m
+\ No newline at end of file[m
