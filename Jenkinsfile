@@ -20,6 +20,20 @@ pipeline {
                 echo 'Junit Test case check Completed!'
             }
         }
+         stage('Sonarqube') {
+                    environment {
+                        scannerHome = tool 'SonarQubeScanner'
+                    }
+                    steps {
+                        withSonarQubeEnv('sonar-server') {
+                            sh "${scannerHome}/bin/sonar-scanner"
+                            sh 'mvn sonar:sonar'
+                        }
+                        timeout(time: 10, unit: 'MINUTES') {
+                            waitForQualityGate abortPipeline: true
+                        }
+                    }
+                }
         stage('Code Package') {
             steps {
                 echo 'Creating War Artifact'
@@ -71,7 +85,7 @@ pipeline {
                 }
                }
             }
-	    }
+	    }/*
 	     stage('Upload the docker Image to Nexus') {
                   steps {
                       script {
@@ -84,6 +98,6 @@ pipeline {
                         }
                       }
                   }
-         }
-    }
+         }*/
+    }git`
 }
